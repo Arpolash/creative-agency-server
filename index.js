@@ -2,16 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
-const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
-
+const fileUpload = require('express-fileupload')
 const port = 5000
 
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static('doctors'));
-app.use(fileUpload());
+app.use(express.static('doctors'))
+app.use(fileUpload())
 require('dotenv').config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.sjfoa.mongodb.net/${process.env.DB_NAME}retryWrites=true&w=majority`;
@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 client.connect(err => {
     const agencyCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION}`);
     const userCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION2}`);
+
 
     app.get('/ourAllCourse',(req,res) =>{
         agencyCollection.find({})
@@ -41,20 +42,18 @@ client.connect(err => {
         })
     })
 
-    app.post('/addUserInfo', (req,res) =>{
-        const file = req.files.file;
-        const name = req.body.name;
-        const email = req.body.email;
-        console.log(file,name,email)
-        file.mv(`${__dirname}/doctors/${file.name}`, err =>{
-          if(err){
-            console.log(err);
-            return res.status(500).send({msg : 'Failed to upload img'});
-          }
-          userCollection.insertOne({ name, email, img:file.name })
-          .then(result => {
-              res.send(result.insertedCount > 0);
-          })
+    app.post("/addUser", (req, res) => {
+        const user = req.body;
+        userCollection.insertOne(user)
+        .then(result => {
+          res.redirect('/')
+        })
+      })
+
+      app.get('/userServiceList',(req,res) =>{
+        userCollection.find({email : req.query.email})
+        .toArray((err,document) =>{
+          res.send(document);
         })
       })
 
