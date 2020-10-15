@@ -138,8 +138,8 @@ client.connect(err => {
     app.post('/isAdmin', (req, res) => {
       const email = req.body.email;
       adminCollection.find({ email: email })
-          .toArray((err, doctors) => {
-              res.send(doctors.length > 0);
+          .toArray((err, document) => {
+              res.send(document.length > 0);
           })
   })
 
