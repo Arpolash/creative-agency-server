@@ -87,7 +87,6 @@ client.connect(err => {
     const file = req.files.file;
     const title = req.body.title;
     const text = req.body.text;
-
     const newImg = file.data;
     const encImg = newImg.toString('base64');
 
@@ -113,15 +112,15 @@ client.connect(err => {
       const user = req.body;
       adminCollection.insertOne(user)
       .then(result => {
-        res.send(result.insertedCount > 0);     
+        res.redirect('https://creative-agency-197d4.web.app/admin/makeAdmin')   
       })
     })
 
     app.post('/isAdmin', (req, res) => {
       const email = req.body.email;
-      adminCollection.find({ email: email })
+      adminCollection.find({email: email })
           .toArray((err, document) => {
-              res.send(document.length > 0);
+              res.send(document.length > 0) 
           })
      })
 
