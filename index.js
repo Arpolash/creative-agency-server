@@ -26,33 +26,16 @@ app.get('/', (req, res) => {
 })
 
 client.connect(err => {
-    const agencyCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION}`);
     const userCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION2}`);
     const reviewCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION3}`);
     const serviceCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION4}`);
     const adminCollection = client.db(`${process.env.DB_NAME}`).collection(`${process.env.DB_COLLECTION5}`);
 
-
-    app.get('/ourAllCourse',(req,res) =>{
-        agencyCollection.find({})
-        .toArray((err, documents) => {
-            res.send(documents);
-        })
-    })
-
-    app.get('/ourCourse',(req,res) =>{
-        const name = "Mobile & Web Design";
-        agencyCollection.find({name : name})
-        .toArray((err, documents) => {
-            res.send(documents);
-        })
-    })
-
     app.post("/addUser", (req, res) => {
         const user = req.body;
         userCollection.insertOne(user)
         .then(result => {
-          res.redirect('http://localhost:3000/dashboard/service')
+          res.redirect('https://creative-agency-197d4.web.app/dashboard/service')
         })
       })
 
@@ -93,7 +76,7 @@ client.connect(err => {
     })
 
     app.get('/review', (req, res) => {
-      reviewCollection.find({})
+      reviewCollection.find({}).sort({ _id: -1}).limit(3)
           .toArray((err, documents) => {
               res.send(documents);
           })
@@ -120,7 +103,7 @@ client.connect(err => {
         })
     })
     app.get('/service', (req, res) => {
-        serviceCollection.find({})
+        serviceCollection.find({}).sort({ _id: -1}).limit(3)
             .toArray((err, documents) => {
                 res.send(documents);
             })
@@ -130,8 +113,7 @@ client.connect(err => {
       const user = req.body;
       adminCollection.insertOne(user)
       .then(result => {
-        res.redirect('http://localhost:3000/admin/makeAdmin');
-        alert('new admin created successfully')
+        res.send(result.insertedCount > 0);     
       })
     })
 
@@ -141,7 +123,7 @@ client.connect(err => {
           .toArray((err, document) => {
               res.send(document.length > 0);
           })
-  })
+     })
 
   });
 
