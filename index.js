@@ -112,7 +112,7 @@ client.connect(err => {
       const user = req.body;
       adminCollection.insertOne(user)
       .then(result => {
-        res.send(result.insertedCount > 0);  
+        res.redirect('https://creative-agency-197d4.web.app/admin/makeAdmin')   
       })
     })
 
