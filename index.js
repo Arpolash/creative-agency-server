@@ -35,7 +35,7 @@ client.connect(err => {
         const user = req.body;
         userCollection.insertOne(user)
         .then(result => {
-          res.redirect('https://creative-agency-197d4.web.app/dashboard/service')
+          res.send(result.insertedCount > 0);
         })
       })
 
@@ -112,7 +112,7 @@ client.connect(err => {
       const user = req.body;
       adminCollection.insertOne(user)
       .then(result => {
-        res.redirect('https://creative-agency-197d4.web.app/admin/makeAdmin')   
+        res.send(result.insertedCount > 0);
       })
     })
 
